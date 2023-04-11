@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 namespace Sample.Api.Controllers;
 
 using Components;
@@ -21,6 +23,9 @@ public class RegistrationController :
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
+
+        Activity.Current?.AddBaggage("foo", "bar");
+        Activity.Current?.AddBaggage("id", Guid.NewGuid().ToString("D"));
 
         try
         {

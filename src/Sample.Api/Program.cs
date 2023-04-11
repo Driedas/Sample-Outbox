@@ -75,13 +75,15 @@ builder.Services.AddMassTransit(x =>
     x.AddEntityFrameworkOutbox<RegistrationDbContext>(o =>
     {
         o.QueryDelay = TimeSpan.FromSeconds(1);
-
+        
         o.UsePostgres();
         o.UseBusOutbox();
     });
 
-    x.UsingRabbitMq((_, cfg) =>
+    x.UsingRabbitMq((context, cfg) =>
     {
+        cfg.UsePublishFilter(typeof(ActivityDiagnosticsPublishFilter<>), context);
+        
         cfg.AutoStart = true;
     });
 });

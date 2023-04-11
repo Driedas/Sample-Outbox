@@ -1,3 +1,6 @@
+using System.Diagnostics;
+using Serilog;
+
 namespace Sample.Components.StateMachines;
 
 using Contracts;
@@ -17,6 +20,11 @@ public class RegistrationStateMachine :
             When(RegistrationSubmitted)
                 .Then(context =>
                 {
+                    Log.Information("Received baggage for activity {Activity}", Activity.Current?.Id);
+                    foreach (var baggage in Activity.Current.Baggage)
+                    {
+                        Log.Information("Key {Key} Value {Value}", baggage.Key, baggage.Value);
+                    }
                     context.Saga.RegistrationDate = context.Message.RegistrationDate;
                     context.Saga.EventId = context.Message.EventId;
                     context.Saga.MemberId = context.Message.MemberId;
